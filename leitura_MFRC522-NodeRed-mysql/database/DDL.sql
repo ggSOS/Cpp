@@ -1,0 +1,10 @@
+CREATE DATABASE fiap_rfid;
+
+USE fiap_rfid;
+
+CREATE TABLE acessos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uid VARCHAR(100),
+    status VARCHAR(50),
+    data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

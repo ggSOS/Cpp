@@ -1,0 +1,353 @@
+[
+    {
+        "id": "f3ce39fc1d715f7b",
+        "type": "tab",
+        "label": "RFID MySQL",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "838deb0be4622fd2",
+        "type": "ui_tab",
+        "name": "FIAP",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "4fbf3e7b10630970",
+        "type": "ui_group",
+        "name": "RFID",
+        "tab": "838deb0be4622fd2",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1af29b93860ef126",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#b11b4f",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#b11b4f",
+                    "edited": true
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#b11b4f",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#e13872",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#b11b4f",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "mysql_config_rfid",
+        "type": "MySQLdatabase",
+        "name": "Banco FIAP RFID",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "fiap_rfid",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "7e83f1698bac3cfa",
+        "type": "serial-port",
+        "name": "Arduino COM5",
+        "serialport": "COM5",
+        "serialbaud": "9600",
+        "databits": 8,
+        "parity": "none",
+        "stopbits": 1,
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": 10000
+    },
+    {
+        "id": "a0d1305915c751e0",
+        "type": "json",
+        "z": "f3ce39fc1d715f7b",
+        "name": "Converter JSON Dashboard",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 310,
+        "y": 220,
+        "wires": [
+            [
+                "90793fe0ad1635a5",
+                "92058100b5aee97b",
+                "8e04187d32d5ca27"
+            ]
+        ]
+    },
+    {
+        "id": "sql_insert_rfid",
+        "type": "function",
+        "z": "f3ce39fc1d715f7b",
+        "name": "SQL INSERT RFID",
+        "func": "let data = JSON.parse(msg.payload);\n\nlet uid = String(data.uid);\nlet status = String(data.status);\n\nmsg.topic = \"INSERT INTO acessos (uid, status) VALUES (?, ?)\";\n\nmsg.payload = [uid, status];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 120,
+        "wires": [
+            [
+                "mysql_rfid"
+            ]
+        ]
+    },
+    {
+        "id": "debug_mysql",
+        "type": "debug",
+        "z": "f3ce39fc1d715f7b",
+        "name": "Resultado MySQL",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 730,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "90793fe0ad1635a5",
+        "type": "debug",
+        "z": "f3ce39fc1d715f7b",
+        "name": "Debug JSON",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 550,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "92058100b5aee97b",
+        "type": "change",
+        "z": "f3ce39fc1d715f7b",
+        "name": "UID",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.uid",
+                "tot": "msg"
+            }
+        ],
+        "x": 530,
+        "y": 300,
+        "wires": [
+            [
+                "2c18d71bd4fa3a04"
+            ]
+        ]
+    },
+    {
+        "id": "8e04187d32d5ca27",
+        "type": "change",
+        "z": "f3ce39fc1d715f7b",
+        "name": "STATUS",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.status",
+                "tot": "msg"
+            }
+        ],
+        "x": 540,
+        "y": 380,
+        "wires": [
+            [
+                "b9f23b820a42c0b7",
+                "b1847e7166d26994"
+            ]
+        ]
+    },
+    {
+        "id": "2c18d71bd4fa3a04",
+        "type": "ui_text",
+        "z": "f3ce39fc1d715f7b",
+        "group": "4fbf3e7b10630970",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "UID",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 750,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "b9f23b820a42c0b7",
+        "type": "ui_text",
+        "z": "f3ce39fc1d715f7b",
+        "group": "4fbf3e7b10630970",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Status",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 750,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "b1847e7166d26994",
+        "type": "ui_template",
+        "z": "f3ce39fc1d715f7b",
+        "group": "4fbf3e7b10630970",
+        "name": "Imagem Status",
+        "order": 3,
+        "width": 6,
+        "height": "6",
+        "format": "<div style=\"text-align:center; padding:20px;\">\n    <div ng-if=\"msg.payload === 'Acesso liberado'\">\n        <img src=\"https://i0.wp.com/innovationweeksjc.com.br/wp-content/uploads/2024/08/Artboard-1.png?fit=800%2C378&ssl=1\" width=\"200\" style=\"margin-bottom:20px;\">\n        <h1 style=\"color:#00c853; font-size:32px; margin:10px 0;\">✔ Bem-vindo à FIAP</h1>\n        <p style=\"color:#555; font-size:18px;\">Acesso autorizado</p>\n    </div>\n\n    <div ng-if=\"msg.payload === 'Acesso negado'\">\n        <img src=\"https://cdn-icons-png.flaticon.com/512/1828/1828843.png\" width=\"100\" style=\"margin-bottom:20px;\">\n        <h2 style=\"color:#d50000; font-size:26px;\">✖ Acesso bloqueado</h2>\n        <p style=\"color:#555;\">Procure a administração</p>\n    </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 770,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "mysql_rfid",
+        "type": "mysql",
+        "z": "f3ce39fc1d715f7b",
+        "mydb": "mysql_config_rfid",
+        "name": "MySQL RFID",
+        "x": 520,
+        "y": 120,
+        "wires": [
+            [
+                "debug_mysql"
+            ]
+        ]
+    },
+    {
+        "id": "6a54eff58cb5e73f",
+        "type": "serial in",
+        "z": "f3ce39fc1d715f7b",
+        "name": "Serial Arduino",
+        "serial": "7e83f1698bac3cfa",
+        "x": 90,
+        "y": 180,
+        "wires": [
+            [
+                "a0d1305915c751e0",
+                "sql_insert_rfid"
+            ]
+        ]
+    }
+]
